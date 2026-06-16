@@ -1,37 +1,69 @@
 const express = require("express");
-const router = express.Router(); // ✅ THIS WAS MISSING
+const router = express.Router();
+
 const { evaluateAnswer } = require("../utils/aiEngine");
+
+const interviewController = require(
+  "../controllers/interviewController"
+);
+
+console.log(interviewController);
 
 // TEST ROUTE
 router.get("/test", (req, res) => {
-  res.json({ message: "Interview route working" });
+  res.json({
+    message: "Interview route working",
+  });
 });
 
-// MAIN ROUTE
+// AI Evaluation
 router.post("/evaluate", async (req, res) => {
   try {
-    const { answer } = req.body;
+    const { question, answer } = req.body;
 
-    if (!answer) {
+    if (!question || !answer) {
       return res.status(400).json({
-        message: "Answer is required",
+        message:
+          "Question and answer are required",
       });
     }
 
-    console.log("🔥 REQUEST RECEIVED:", req.body);
+    const result = await evaluateAnswer(
+      question,
+      answer
+    );
 
-    const result = await evaluateAnswer(answer);
-
-    return res.json(result);
-
+    res.json(result);
   } catch (error) {
-    console.log("❌ ERROR:", error);
-
-    return res.status(500).json({
+    res.status(500).json({
       message: "AI evaluation failed",
       error: error.message,
     });
   }
 });
+
+// Save interview
+router.post(
+  "/save",
+  interviewController.saveInterview
+);
+
+// Get all interviews of a user
+router.get(
+  "/user/:userId",
+  interviewController.getUserInterviews
+);
+
+// Get one interview
+router.get(
+  "/history/:id",
+  interviewController.getInterviewById
+);
+
+// Delete interview
+router.delete(
+  "/history/:id",
+  interviewController.deleteInterview
+);
 
 module.exports = router;
