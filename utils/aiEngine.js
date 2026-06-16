@@ -1,22 +1,28 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
-console.log(
-"GEMINI KEY EXISTS:",
-!!process.env.GEMINI_API_KEY
+const {
+GoogleGenerativeAI,
+} = require(
+"@google/generative-ai"
 );
 
-const genAI = new GoogleGenerativeAI(
+const genAI =
+new GoogleGenerativeAI(
 process.env.GEMINI_API_KEY
 );
 
-async function evaluateAnswer(answer) {
+async function evaluateAnswer(
+question,
+answer
+) {
 try {
 console.log(
-"🔥 AI ENGINE INPUT:",
+"Question:",
+question
+);
+console.log(
+"Answer:",
 answer
 );
 
-// Empty answer
 if (
   !answer ||
   answer.trim().length < 5
@@ -33,7 +39,6 @@ if (
   };
 }
 
-// Nonsense answer
 const words = answer
   .trim()
   .split(/\s+/);
@@ -53,7 +58,8 @@ if (words.length < 3) {
 
 const model =
   genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model:
+      "gemini-2.0-flash",
   });
 
 const prompt = `
@@ -61,18 +67,18 @@ const prompt = `
 You are an expert interview evaluator.
 
 Question:
-Explain OOPs in your own words.
+${question}
 
 Candidate Answer:
 ${answer}
 
-IMPORTANT:
+Rules:
 
-- If the answer is meaningless, random characters, or unrelated to the question, give a score between 0 and 2.
-- If the answer is partially correct, give a score between 3 and 6.
-- If the answer is good and contains technical concepts and examples, give a score between 7 and 10.
+1. Meaningless answers get 0-2.
+2. Partial answers get 3-6.
+3. Good technical answers get 7-10.
 
-Return ONLY valid JSON.
+Return ONLY valid JSON:
 
 {
 "score": number,
@@ -94,7 +100,7 @@ const text =
   response.text();
 
 console.log(
-  "🔥 GEMINI RAW OUTPUT:"
+  "GEMINI RESPONSE:"
 );
 console.log(text);
 
@@ -107,11 +113,11 @@ try {
   return JSON.parse(
     cleaned
   );
-} catch (parseError) {
+} catch (e) {
   console.log(
-    "❌ JSON PARSE ERROR"
+    "JSON ERROR:",
+    cleaned
   );
-  console.log(cleaned);
 
   return {
     score: 5,
@@ -129,7 +135,7 @@ try {
 
 } catch (error) {
 console.log(
-"❌ AI ENGINE ERROR:"
+"AI ENGINE ERROR:"
 );
 console.log(error);
 
