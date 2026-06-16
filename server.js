@@ -17,6 +17,9 @@ const dsaRoutes = require("./routes/dsaRoutes");
 const interviewRoutes = require("./routes/interviewRoutes");
 const chatInterviewRoutes = require("./routes/chatInterviewRoutes");
 const pdfRoutes = require("./routes/pdfRoutes");
+const reportRoutes =
+  require("./routes/reportRoutes");
+
 
 
 
@@ -41,6 +44,7 @@ app.use("/api/dsa", dsaRoutes);
 app.use("/api/interview", interviewRoutes);
 app.use("/api/chat-interview", chatInterviewRoutes);
 app.use("/api/pdf", pdfRoutes);
+app.use( "/api/report",reportRoutes);
 console.log("🚀 ROUTES MOUNTED SUCCESSFULLY");
 
 // Debug routes
