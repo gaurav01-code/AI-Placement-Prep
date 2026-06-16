@@ -6,13 +6,8 @@ router.post("/improve", async (req, res) => {
   try {
     const { text } = req.body;
 
-    const improvedText = `
-Original:
-${text}
-
-Improved Version:
-Developed and implemented the above project using modern development practices, focusing on performance, usability, and problem-solving.
-`;
+    const improvedText =
+    "Designed and developed a scalable application using modern technologies, focusing on performance, usability, and problem-solving.";
 
     res.json({
       success: true,
